@@ -1,0 +1,23 @@
+sites:
+  - name: Warsaw
+    facility: lab
+    status: Staging
+
+manufacturers:
+  - Cisco
+  - Arista
+  - Juniper
+
+device_types:
+  - model: 'Cisco Router'
+    manufacturer: 'Cisco'
+  - model: 'Cisco Switch'
+    manufacturer: “Cisco'
+  - model: 'vEOS'
+    manufacturer: 'Arista'
+  - model: 'vSRX'
+    manufacturer: 'Juniper'
+
+device_roles: 
+  - name: 'lab device'
+    color: FFFFFF

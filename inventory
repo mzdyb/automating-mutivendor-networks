@@ -1,0 +1,19 @@
+---
+cisco:
+  hosts:
+    cisco-rtr1:
+      ansible_host: 192.168.122.100
+  vars:
+    ansible_network_os: cisco.ios.ios
+
+network:
+  children:
+    cisco
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+    ansible_user: admin
+    ansible_password: redhat
+    ansible_become: true
+    ansible_become_method: enable
+    ansible_become_password: redhat
+    # ansible_network_cli_ssh_type: paramiko

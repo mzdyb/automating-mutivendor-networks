@@ -1,0 +1,10 @@
+---
+- name: Add Devices to NetBox
+  netbox.netbox.netbox_device:
+    data: 
+      name: "{{ inventory_hostname }}"
+      site: "{{ site }}"
+      serial: "{{ ansible_net_serialnum }}"
+      device_type: "{{ type }}"
+      device_role: "{{ role }}"
+      comments: "added by Ansible"

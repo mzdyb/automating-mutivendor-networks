@@ -1,0 +1,25 @@
+---
+- name: Ensure proper state of Sites
+  netbox.netbox.netbox_site:
+    data: "{{ item }}"
+    state: present
+  loop: "{{ sites }}"
+
+- name: Ensure proper state of Manufacturers
+  netbox.netbox.netbox_manufacturer:
+    data:
+      name: "{{ item }}"
+    state: present
+  loop: "{{ manufacturers }}"
+
+- name: Ensure proper state of Device Types
+  netbox.netbox.netbox_device_type:
+    data: "{{ item }}"
+    state: present
+  loop: "{{ device_types }}"
+
+- name: Ensure proper state of Device Roles
+  netbox.netbox.netbox_device_role:
+    data: "{{ item }}"
+    state: present
+  loop: "{{ device_roles }}"

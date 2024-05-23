@@ -1,0 +1,4 @@
+---
+netbox:
+  url: http://192.168.122.1:2111
+  token: 9a5788fe2d44125537586600e83ef0b2860ebe75  # temporary demo token

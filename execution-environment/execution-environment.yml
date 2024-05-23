@@ -27,8 +27,13 @@ dependencies:
       - name: cisco.ios
       - name: arista.eos
   python:
+    - paramiko
     - pytz
     - pynetbox
+    - ntc-templates
+    - genie
+    - pyats
+
   system:
     - python3 >=3.9
   ansible_core:

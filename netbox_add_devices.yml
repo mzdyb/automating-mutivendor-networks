@@ -1,0 +1,22 @@
+---
+- name: Prepare netbox to add network devices
+  hosts: localhost
+  module_defaults:
+    group/netbox.netbox.netbox:
+      netbox_url: "{{ netbox.url }}"
+      netbox_token: "{{ netbox.token }}"
+
+  roles:
+    - prepare_netbox_to_add_network_devices
+
+
+- name: Add network devices to netbox
+  hosts: network
+  module_defaults:
+    group/netbox.netbox.netbox:
+      netbox_url: "{{ netbox.url }}"
+      netbox_token: "{{ netbox.token }}"
+
+  roles:
+    - gather_network_facts
+    - add_network_devices_to_netbox
