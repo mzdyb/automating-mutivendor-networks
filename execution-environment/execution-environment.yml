@@ -6,7 +6,7 @@ options:
 
 images:
   base_image:
-    name: registry.redhat.io/ansible-automation-platform-24/ee-supported-rhel8:latest
+    name: registry.redhat.io/ansible-automation-platform-24/ee-minimal-rhel8:latest
 
 build_arg_defaults:
   ANSIBLE_GALAXY_CLI_COLLECTION_OPTS: "--ignore-certs" # Ansible Builder doesn't support --ignore-certs, whereas the ansible-galaxy command supports this option
@@ -27,7 +27,6 @@ dependencies:
       - name: cisco.ios
       - name: arista.eos
   python:
-    - paramiko
     - pytz
     - pynetbox
     - ntc-templates

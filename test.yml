@@ -1,18 +1,23 @@
 ---
 - name: Test
-  hosts: network  
+  hosts: network
+  module_defaults:
+    group/netbox.netbox.netbox:
+      netbox_url: "{{ netbox.url }}"
+      netbox_token: "{{ netbox.token }}"
 
-  tasks:
-    - name: "Run command and parse with ntc_templates"
-      ansible.utils.cli_parse:
-        command: "show ip route"
-        parser:
-          name: ansible.netcommon.ntc_templates
-        set_fact: interfaces
+  # tasks:
+  #   - name: "Run command and parse with ntc_templates"
+  #     ansible.utils.cli_parse:
+  #       command: "show ip route"
+  #       parser:
+  #         name: ansible.netcommon.ntc_templates
+  #       set_fact: interfaces
 
     # - name: run show version command
     #   ansible.netcommon.cli_command:
     #     command: show version
 
-  # roles:
-  #   - add_devices_configuration_to netbox
+  roles:
+    - gather_network_facts  
+    - add_devices_configuration_to netbox

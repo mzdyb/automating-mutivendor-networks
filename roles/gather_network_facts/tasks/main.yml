@@ -3,7 +3,7 @@
   cisco.ios.ios_facts:
     gather_subset: 
       - all
-      - "!config"
+      # - "!config"
   when: ansible_network_os == 'cisco.ios.ios'
 
 - name: Gather Arista facts
