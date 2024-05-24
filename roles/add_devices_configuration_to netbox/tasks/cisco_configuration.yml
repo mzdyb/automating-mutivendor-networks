@@ -47,6 +47,22 @@
   when:
     - inventory_hostname in groups['cisco']
 
+- name: Cisco - add IP addresses to interfaces
+  netbox.netbox.netbox_ip_address:
+    data:
+      address: "{{ item.ip_address ~ '/' ~ item.prefix_length }}"
+      assigned_object:
+        name: "{{ item.interface }}"
+        device: "{{ inventory_hostname }}"
+    state: present
+  loop: "{{ cisco_interfaces }}"
+  loop_control:
+    label: "{{ item.interface }}"
+  when:
+    - inventory_hostname in groups['cisco'] 
+    - item.ip_address != ''
+
+
 - name: Cisco - collect L2 interfaces data from devices
   cisco.ios.ios_facts:
     gather_network_resources: 
@@ -73,17 +89,3 @@
     - inventory_hostname in groups['switches']
     - inventory_hostname in groups['cisco']
 
-- name: Cisco - add IP addresses to interfaces
-  netbox.netbox.netbox_ip_address:
-    data:
-      address: "{{ item.ip_address ~ '/' ~ item.prefix_length }}"
-      assigned_object:
-        name: "{{ item.interface }}"
-        device: "{{ inventory_hostname }}"
-    state: present
-  loop: "{{ cisco_interfaces }}"
-  loop_control:
-    label: "{{ item.interface }}"
-  when: 
-    - item.ip_address != ''
-    - inventory_hostname in groups['cisco']

@@ -1,28 +1,22 @@
 ---
 - name: Test
-  hosts: cisco, arista
+  hosts: arista
   module_defaults:
     group/netbox.netbox.netbox:
       netbox_url: "{{ netbox.url }}"
       netbox_token: "{{ netbox.token }}"
 
   tasks:
-    - name: "Cisco - collect interfaces data from devices"
-      ansible.utils.cli_parse:
-        command: "show interfaces"
-        parser:
-          name: ansible.netcommon.ntc_templates
-        set_fact: cisco_interfaces
-      when:
-        - inventory_hostname in groups['cisco']
+    - name: Arista - collect L2 interfaces data from devices
+      arista.eos.eos_facts:
+        gather_network_resources: 
+          - "l2_interfaces"
+        gather_subset:
+          - min
+      register: arista_l2_interfaces
+      when: 
+        - inventory_hostname in groups['switches']
+        - inventory_hostname in groups['arista']
 
-    - debug: msg="{{ cisco_interfaces }}"
-
-    # - name: run show version command
-    #   ansible.netcommon.cli_command:
-    #     command: show version
-
-  # roles:
-  #   - gather_network_facts  
-    # - add_devices_configuration_to netbox
-
+    - debug: msg="{{ arista_l2_interfaces }}"
+ 

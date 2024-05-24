@@ -1,26 +1,26 @@
 ---
-- name: "Arista - collect vlans from devices"
-  ansible.utils.cli_parse:
-    command: "show vlan"
-    parser:
-      name: ansible.netcommon.ntc_templates
-    set_fact: arista_vlans
-  when: 
-    - inventory_hostname in groups['switches']
-    - inventory_hostname in groups['arista']
+# - name: "Arista - collect vlans from devices"
+#   ansible.utils.cli_parse:
+#     command: "show vlan"
+#     parser:
+#       name: ansible.netcommon.ntc_templates
+#     set_fact: arista_vlans
+#   when: 
+#     - inventory_hostname in groups['switches']
+#     - inventory_hostname in groups['arista']
 
-- name: Arista - add vlans to NetBox
-  netbox.netbox.netbox_vlan:
-    data:
-      name: "{{ item.vlan_name }}"
-      vid: "{{ item.vlan_id }}"
-    state: present
-  loop: "{{ arista_vlans }}"
-  loop_control:
-    label: "{{ item.vlan_id }}"
-  when: 
-    - inventory_hostname in groups['switches']
-    - inventory_hostname in groups['arista'] 
+# - name: Arista - add vlans to NetBox
+#   netbox.netbox.netbox_vlan:
+#     data:
+#       name: "{{ item.vlan_name }}"
+#       vid: "{{ item.vlan_id }}"
+#     state: present
+#   loop: "{{ arista_vlans }}"
+#   loop_control:
+#     label: "{{ item.vlan_id }}"
+#   when: 
+#     - inventory_hostname in groups['switches']
+#     - inventory_hostname in groups['arista'] 
 
 - name: "Arista - collect interfaces data from devices"
   ansible.utils.cli_parse:
@@ -47,36 +47,10 @@
   when:
     - inventory_hostname in groups['arista']
 
-- name: Arista - collect L2 interfaces data from devices
-  arista.ios.ios_facts:
-    gather_network_resources: 
-      - "l2_interfaces"
-    gather_subset:
-      - min
-  register: arista_l2_interfaces
-  when: 
-    - inventory_hostname in groups['switches']
-    - inventory_hostname in groups['arista']
-
-- name: Arista - add vlans to interfaces in netbox
-  netbox.netbox.netbox_device_interface:
-    data:
-      device: "{{ inventory_hostname }}"
-      name: "{{ item.name }}"
-      mode: "access"
-      untagged_vlan: "{{ item.access.vlan | default(omit) }}"
-  loop: "{{ arista_l2_interfaces.ansible_facts.ansible_network_resources.l2_interfaces }}"
-  loop_control:
-    label: "{{ item.name }}"
-  when:
-    - item.access is defined
-    - inventory_hostname in groups['switches']
-    - inventory_hostname in groups['arista']
-
 - name: Arista - add IP addresses to interfaces
   netbox.netbox.netbox_ip_address:
     data:
-      address: "{{ item.ip_address ~ '/' ~ item.prefix_length }}"
+      address: "{{ item.ip_address }}"
       assigned_object:
         name: "{{ item.interface }}"
         device: "{{ inventory_hostname }}"
@@ -87,3 +61,30 @@
   when: 
     - item.ip_address != ''
     - inventory_hostname in groups['arista']
+
+# - name: Arista - collect L2 interfaces data from devices
+#   arista.eos.eos_facts:
+#     gather_network_resources: 
+#       - "l2_interfaces"
+#     gather_subset:
+#       - min
+#   register: arista_l2_interfaces
+#   when: 
+#     - inventory_hostname in groups['switches']
+#     - inventory_hostname in groups['arista']
+
+# - name: Arista - add vlans to interfaces in netbox
+#   netbox.netbox.netbox_device_interface:
+#     data:
+#       device: "{{ inventory_hostname }}"
+#       name: "{{ item.name }}"
+#       mode: "access"
+#       untagged_vlan: "{{ item.access.vlan | default(omit) }}"
+#   loop: "{{ arista_l2_interfaces.ansible_facts.ansible_network_resources.l2_interfaces }}"
+#   loop_control:
+#     label: "{{ item.name }}"
+#   when:
+#     - item.access is defined
+#     - inventory_hostname in groups['switches']
+#     - inventory_hostname in groups['arista']
+
