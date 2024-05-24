@@ -3,12 +3,26 @@ cisco:
   hosts:
     cisco-rtr1:
       ansible_host: 192.168.122.100
+    cisco-sw1:
+      ansible_host: 192.168.122.104
   vars:
     ansible_network_os: cisco.ios.ios
 
+arista:
+  hosts:
+    arista-sw1:
+      ansible_host: 192.168.122.102
+
+juniper:
+  hosts:
+    juniper-rtr1:
+      ansible_host: 192.168.122.101
+
 network:
   children:
-    cisco
+    cisco:
+    arista:
+    juniper:
   vars:
     ansible_connection: ansible.netcommon.network_cli
     ansible_user: admin

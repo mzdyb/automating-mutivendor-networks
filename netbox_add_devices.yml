@@ -7,7 +7,7 @@
       netbox_token: "{{ netbox.token }}"
 
   roles:
-    - prepare_netbox_to_add_network_devices
+    - configure_netbox_objects
 
 
 - name: Add network devices to netbox
