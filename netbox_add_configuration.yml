@@ -1,0 +1,11 @@
+---
+- name: Add network devices to netbox
+  hosts: cisco
+  module_defaults:
+    group/netbox.netbox.netbox:
+      netbox_url: "{{ netbox.url }}"
+      netbox_token: "{{ netbox.token }}"
+
+  roles:
+    # - gather_network_facts
+    - add_devices_configuration_to netbox

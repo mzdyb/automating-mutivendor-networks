@@ -7,27 +7,48 @@ cisco:
       ansible_host: 192.168.122.104
   vars:
     ansible_network_os: cisco.ios.ios
+    ansible_user: admin
+    ansible_password: redhat
+    ansible_become_method: enable
+    ansible_become_password: redhat
 
 arista:
   hosts:
     arista-sw1:
       ansible_host: 192.168.122.102
+  vars:
+    ansible_network_os: arista.eos.eos
+    ansible_user: admin
+    ansible_password: redhat
+    ansible_become_method: enable
+    ansible_become_password: redhat
 
-juniper:
-  hosts:
-    juniper-rtr1:
-      ansible_host: 192.168.122.101
+# juniper:
+#   hosts:
+#     juniper-rtr1:
+#       ansible_host: 192.168.122.101
+#   vars:
+#     ansible_network_os: junipernetworks.junos.junos
+#     ansible_user: root
+#     ansible_password: Redhat1
+#     ansible_become_method: enable
+#     ansible_become_password: Redhat1
 
 network:
   children:
     cisco:
     arista:
-    juniper:
+    # juniper:
   vars:
     ansible_connection: ansible.netcommon.network_cli
-    ansible_user: admin
-    ansible_password: redhat
     ansible_become: true
-    ansible_become_method: enable
-    ansible_become_password: redhat
-    # ansible_network_cli_ssh_type: paramiko
+
+switches:
+  hosts:
+    cisco-sw1:
+    arista-sw1:
+
+routers:
+  hosts:
+    cisco-rtr1:
+    # juniper-rtr1:

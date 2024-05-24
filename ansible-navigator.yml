@@ -5,6 +5,7 @@ ansible-navigator:
       path: ansible.cfg
   execution-environment:
     image: hub.rh.lab/network-ee:latest
+    # image: quay.io/maxrainer/netbox:latest
     pull:
       policy: missing
   playbook-artifact:

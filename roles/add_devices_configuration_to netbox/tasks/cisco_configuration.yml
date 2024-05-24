@@ -1,0 +1,89 @@
+---
+- name: "Cisco - collect vlans from devices"
+  ansible.utils.cli_parse:
+    command: "show vlan"
+    parser:
+      name: ansible.netcommon.ntc_templates
+    set_fact: cisco_vlans
+  when: 
+    - inventory_hostname in groups['switches']
+    - inventory_hostname in groups['cisco']
+
+- name: Cisco - add vlans to NetBox
+  netbox.netbox.netbox_vlan:
+    data:
+      name: "{{ item.vlan_name }}"
+      vid: "{{ item.vlan_id }}"
+    state: present
+  loop: "{{ cisco_vlans }}"
+  loop_control:
+    label: "{{ item.vlan_id }}"
+  when: 
+    - inventory_hostname in groups['switches']
+    - inventory_hostname in groups['cisco'] 
+
+- name: "Cisco - collect interfaces data from devices"
+  ansible.utils.cli_parse:
+    command: "show interfaces"
+    parser:
+      name: ansible.netcommon.ntc_templates
+    set_fact: cisco_interfaces
+  when:
+    - inventory_hostname in groups['cisco']
+
+- name: Cisco - add interfaces to netbox
+  netbox.netbox.netbox_device_interface:
+    data:
+      device: "{{ inventory_hostname }}"
+      name: "{{ item.interface }}"
+      type: "Virtual"
+      description: "{{ item.description }}"
+      mac_address: "{{ item.mac_address | ansible.utils.hwaddr('linux')  }}"
+      mtu: "{{ item.mtu }}"
+    state: present
+  loop: "{{ cisco_interfaces }}"
+  loop_control:
+    label: "{{ item.interface }}"
+  when:
+    - inventory_hostname in groups['cisco']
+
+- name: Cisco - collect L2 interfaces data from devices
+  cisco.ios.ios_facts:
+    gather_network_resources: 
+      - "l2_interfaces"
+    gather_subset:
+      - min
+  register: cisco_l2_interfaces
+  when: 
+    - inventory_hostname in groups['switches']
+    - inventory_hostname in groups['cisco']
+
+- name: Cisco - add vlans to interfaces in netbox
+  netbox.netbox.netbox_device_interface:
+    data:
+      device: "{{ inventory_hostname }}"
+      name: "{{ item.name }}"
+      mode: "access"
+      untagged_vlan: "{{ item.access.vlan | default(omit) }}"
+  loop: "{{ cisco_l2_interfaces.ansible_facts.ansible_network_resources.l2_interfaces }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - item.access is defined
+    - inventory_hostname in groups['switches']
+    - inventory_hostname in groups['cisco']
+
+- name: Cisco - add IP addresses to interfaces
+  netbox.netbox.netbox_ip_address:
+    data:
+      address: "{{ item.ip_address ~ '/' ~ item.prefix_length }}"
+      assigned_object:
+        name: "{{ item.interface }}"
+        device: "{{ inventory_hostname }}"
+    state: present
+  loop: "{{ cisco_interfaces }}"
+  loop_control:
+    label: "{{ item.interface }}"
+  when: 
+    - item.ip_address != ''
+    - inventory_hostname in groups['cisco']

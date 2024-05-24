@@ -24,14 +24,19 @@ dependencies:
     collections:
       - name: netbox.netbox
       - name: junipernetworks.junos
+      - name: juniper.device
       - name: cisco.ios
       - name: arista.eos
   python:
     - pytz
     - pynetbox
+    - ncclient
     - ntc-templates
     - genie
     - pyats
+    - junos-eznc
+    - jxmlease
+    - xmltodict
 
   system:
     - python3 >=3.9

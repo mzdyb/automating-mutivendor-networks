@@ -3,18 +3,18 @@
   cisco.ios.ios_facts:
     gather_subset: 
       - all
-      # - "!config"
+      - "!config"
   when: ansible_network_os == 'cisco.ios.ios'
 
 - name: Gather Arista facts
-  cisco.ios.ios_facts:
+  arista.eos.eos_facts:
     gather_subset: 
       - all
       - "!config"
   when: ansible_network_os == 'arista.eos.eos'
 
 - name: Gather Juniper facts
-  cisco.ios.ios_facts:
+  junipernetworks.junos.junos_facts:
     gather_subset: 
       - all
       - "!config"

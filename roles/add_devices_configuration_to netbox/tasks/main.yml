@@ -1,30 +1,6 @@
 ---
-# Different ways of collecting data from network devices are shown here
-# Interfaces and IP addresses are added using gathered Ansible Facts
-- name: Add interfaces
-  netbox.netbox.netbox_device_interface:
-    data:
-      device: "{{ inventory_hostname }}"
-      name: "{{ item.key }}"
-      type: "Virtual"
-      description: "{{ item.value.description }}"
-      mac_address: "{{ item.value.macaddress }}"
-      mtu: "{{ item.value.mtu }}"
-    state: present
-  with_dict:
-    - "{{ ansible_net_interfaces }}"
+- name: Add cisco configuration to netbox
+  ansible.builtin.include_tasks: cisco_configuration.yml
 
-- name: Add IP addresses to interfaces
-  netbox.netbox.netbox_ip_address:
-    data:
-      address: "{{ item.value.ipv4 | map(attribute='address') | join() ~ '/' ~ item.value.ipv4 | map(attribute='subnet') | join() }}"
-      assigned_object:
-        name: "{{ item.key }}"
-        device: "{{ inventory_hostname }}"
-    state: present
-  with_dict:
-    - "{{ ansible_net_interfaces }}"
-  when: item.value.ipv4 | map(attribute='address')
-
-
-# Vlans are added using data gathered with ntc-templates
+- name: Add arista configuration to netbox
+  ansible.builtin.include_tasks: arista_configuration.yml

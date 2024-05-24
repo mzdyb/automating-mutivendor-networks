@@ -13,9 +13,9 @@ device_types:
     manufacturer: 'Cisco'
   - model: 'Cisco Switch'
     manufacturer: “Cisco'
-  - model: 'vEOS'
+  - model: 'Arista Switch'
     manufacturer: 'Arista'
-  - model: 'vSRX'
+  - model: 'Juniper Switch'
     manufacturer: 'Juniper'
 
 device_roles: 
