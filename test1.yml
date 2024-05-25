@@ -1,0 +1,19 @@
+---
+- name: Test
+  hosts: juniper
+  ansible_connection: ansible.netcommon.netconf
+  module_defaults:
+    group/netbox.netbox.netbox:
+      netbox_url: "{{ netbox.url }}"
+      netbox_token: "{{ netbox.token }}"
+
+  tasks:
+    - name: Juniper - collect L2 interfaces data from devices
+      junipernetworks.junos.junos_facts:
+        gather_network_resources: 
+          - "l2_interfaces"
+        gather_subset:
+          - min
+      register: juniper_l2_interfaces
+
+    - debug: msg="{{ juniper_l2_interfaces }}"

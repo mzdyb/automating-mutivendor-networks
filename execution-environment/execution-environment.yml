@@ -34,7 +34,6 @@ dependencies:
     - ntc-templates
     - genie
     - pyats
-    - junos-eznc
     - jxmlease
     - xmltodict
 

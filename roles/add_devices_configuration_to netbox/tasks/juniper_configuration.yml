@@ -1,0 +1,82 @@
+---
+- name: Juniper - collect vlans from devices
+  ansible.utils.cli_parse:
+    command: "show vlans"
+    parser:
+      name: ansible.netcommon.ntc_templates
+    set_fact: juniper_vlans
+  when:
+    - inventory_hostname in groups['switches']
+    - inventory_hostname in groups['juniper']
+
+- name: Juniper - add vlans to NetBox
+  netbox.netbox.netbox_vlan:
+    data:
+      name: "{{ item.vlan_name }}"
+      vid: "{{ item.tag }}"
+    state: present
+  loop: "{{ juniper_vlans }}"
+  loop_control:
+    label: "{{ item.tag }}"
+  when: 
+    - inventory_hostname in groups['switches']
+    - inventory_hostname in groups['juniper'] 
+
+- name: Juniper - collect interfaces data from devices
+  ansible.utils.cli_parse:
+    command: "show interfaces"
+    parser:
+      name: ansible.netcommon.ntc_templates
+    set_fact: juniper_interfaces
+  when:
+    - inventory_hostname in groups['juniper']
+
+- name: Juniper - add interfaces to netbox
+  netbox.netbox.netbox_device_interface:
+    data:
+      device: "{{ inventory_hostname }}"
+      name: "{{ item.interface }}"
+      type: "Virtual"
+      description: "{{ item.description }}"
+    state: present
+  loop: "{{ juniper_interfaces }}"
+  loop_control:
+    label: "{{ item.interface }}"
+  when:
+    - inventory_hostname in groups['juniper']
+    - item.interface is match("^em0") or item.interface is match("^xe-0/0/0") or item.interface is match("^irb")
+
+- name: Juniper - add IP addresses to interfaces
+  netbox.netbox.netbox_ip_address:
+    data:
+      address: "{{ item.local ~ ( item.destination | regex_search('/.*')) }}"
+      assigned_object:
+        name: "{{ item.interface }}"
+        device: "{{ inventory_hostname }}"
+    state: present
+  loop: "{{ juniper_interfaces }}"
+  loop_control:
+    label: "{{ item.interface }}"
+  when:
+    - inventory_hostname in groups['juniper'] 
+    - item.interface is match("^em0") or item.interface is match("^xe-0/0/0") or item.interface is match("^irb")
+    - item.local != ''
+
+
+
+
+
+- name: Juniper- add vlans to interfaces in netbox
+  netbox.netbox.netbox_device_interface:
+    data:
+      device: "{{ inventory_hostname }}"
+      name: "{{ item.vlan_name }}"
+      mode: "access"
+      untagged_vlan: "{{ item.tag }}"
+  loop: "{{ juniper_vlans }}"
+  loop_control:
+    label: "{{ item.tag}}"
+  when:
+    - item.interface
+    - inventory_hostname in groups['switches']
+    - inventory_hostname in groups['juniper']

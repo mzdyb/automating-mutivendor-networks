@@ -1,6 +1,9 @@
 ---
-- name: Add cisco configuration to netbox
-  ansible.builtin.include_tasks: cisco_configuration.yml
+# - name: Add cisco configuration to netbox
+#   ansible.builtin.include_tasks: cisco_configuration.yml
 
-- name: Add arista configuration to netbox
-  ansible.builtin.include_tasks: arista_configuration.yml
+# - name: Add arista configuration to netbox
+#   ansible.builtin.include_tasks: arista_configuration.yml
+
+- name: Add juniper configuration to netbox
+  ansible.builtin.include_tasks: juniper_configuration.yml

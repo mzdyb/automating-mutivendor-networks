@@ -56,23 +56,3 @@
 #   when: 
 #     - ansible_network_os == 'arista.eos.eos'
 #     - item.value.ipv4.address is defined
-
-
-# Vlans are added using data gathered with ntc-templates
-
-- name: "Run command and parse with ntc_templates"
-  ansible.utils.cli_parse:
-    command: show vlan
-    parser:
-      name: ansible.netcommon.ntc_templates
-    set_fact: vlans
-  when: inventory_hostname in groups['switches']
-
-- name: Create vlan within NetBox with only required information
-  netbox_vlan:
-    netbox_url: http://netbox.local
-    netbox_token: thisIsMyToken
-    data:
-      name: Test VLAN
-      vid: 400
-    state: present

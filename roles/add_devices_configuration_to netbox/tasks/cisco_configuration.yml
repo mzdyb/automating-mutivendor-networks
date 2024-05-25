@@ -5,7 +5,7 @@
     parser:
       name: ansible.netcommon.ntc_templates
     set_fact: cisco_vlans
-  when: 
+  when:
     - inventory_hostname in groups['switches']
     - inventory_hostname in groups['cisco']
 

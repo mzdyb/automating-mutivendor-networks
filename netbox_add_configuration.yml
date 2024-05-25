@@ -1,6 +1,6 @@
 ---
 - name: Add network devices to netbox
-  hosts: arista
+  hosts: juniper
   module_defaults:
     group/netbox.netbox.netbox:
       netbox_url: "{{ netbox.url }}"
