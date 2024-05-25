@@ -1,6 +1,6 @@
 ---
 - name: Add network devices to netbox
-  hosts: juniper
+  hosts: network
   module_defaults:
     group/netbox.netbox.netbox:
       netbox_url: "{{ netbox.url }}"

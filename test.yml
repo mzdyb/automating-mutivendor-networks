@@ -22,19 +22,31 @@
 
     # - name: run show version on remote devices
     #   junipernetworks.junos.junos_command:
-    #     commands: show version
-    #   register: showver
-
-    # - debug: msg="{{ showver }}"
+    #     commands: show configuration interfaces 
+    #     display: json
+    #   register: show
 
     # - name: Juniper - collect vlans from devices
     #   ansible.utils.cli_parse:
-    #     command: show vlans
+    #     command: show ethernet-switching table
     #     parser:
     #       name: ansible.netcommon.ntc_templates
-    #     set_fact: juniper_vlans
+    #     set_fact: show
 
-    # - debug: msg="{{ juniper_vlans }}"
+    # - debug: msg="{{ show }}"
+
+    - name: "Run command and parse with textfsm"
+      ansible.utils.cli_parse:
+        command: show ethernet-switching table
+        parser:
+          name: ansible.utils.textfsm
+          template_path: templates/juniper_junos_show_ethernet-switching_table.textfsm
+        set_fact: show
+
+    - debug: msg="{{ show }}"
+
+
+
 
     # - name: "Cisco - collect vlans from devices"
     #   ansible.utils.cli_parse:
@@ -45,3 +57,16 @@
     #   when:
     #     - inventory_hostname in groups['switches']
     #     - inventory_hostname in groups['cisco']
+
+    # - name: Gather running vlans configuration
+    #   junipernetworks.junos.junos_interfaces:
+    #     state: gathered
+    #   register: data
+
+    # - debug: var=data
+
+    # - name: collect interface configuration facts
+    #   junipernetworks.junos.junos_facts:
+    #     gather_subset: interfaces
+    #     gather_network_resources:
+    #       - interfaces

@@ -62,7 +62,6 @@
     - inventory_hostname in groups['cisco'] 
     - item.ip_address != ''
 
-
 - name: Cisco - collect L2 interfaces data from devices
   cisco.ios.ios_facts:
     gather_network_resources: 
@@ -88,4 +87,3 @@
     - item.access is defined
     - inventory_hostname in groups['switches']
     - inventory_hostname in groups['cisco']
-

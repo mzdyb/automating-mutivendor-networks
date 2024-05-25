@@ -1,19 +1,36 @@
 ---
 - name: Test
-  hosts: juniper
-  ansible_connection: ansible.netcommon.netconf
+  hosts: cisco
   module_defaults:
     group/netbox.netbox.netbox:
       netbox_url: "{{ netbox.url }}"
       netbox_token: "{{ netbox.token }}"
 
   tasks:
-    - name: Juniper - collect L2 interfaces data from devices
-      junipernetworks.junos.junos_facts:
+    - name: Cisco - collect L2 interfaces data from devices
+      cisco.ios.ios_facts:
         gather_network_resources: 
           - "l2_interfaces"
         gather_subset:
           - min
-      register: juniper_l2_interfaces
+      register: cisco_l2_interfaces
+      when: 
+        - inventory_hostname in groups['switches']
+        - inventory_hostname in groups['cisco']
 
-    - debug: msg="{{ juniper_l2_interfaces }}"
+    - debug: var=cisco_l2_interfaces   
+
+    # - name: Cisco - add vlans to interfaces in netbox
+    #   netbox.netbox.netbox_device_interface:
+    #     data:
+    #       device: "{{ inventory_hostname }}"
+    #       name: "{{ item.name }}"
+    #       mode: "access"
+    #       untagged_vlan: "{{ item.access.vlan | default(omit) }}"
+    #   loop: "{{ cisco_l2_interfaces.ansible_facts.ansible_network_resources.l2_interfaces }}"
+    #   loop_control:
+    #     label: "{{ item.name }}"
+    #   when:
+    #     - item.access is defined
+    #     - inventory_hostname in groups['switches']
+    #     - inventory_hostname in groups['cisco']

@@ -18,5 +18,4 @@
       netbox_token: "{{ netbox.token }}"
 
   roles:
-    - gather_network_facts
     - add_network_devices_to_netbox

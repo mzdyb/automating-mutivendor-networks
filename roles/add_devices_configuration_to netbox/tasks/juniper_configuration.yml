@@ -58,25 +58,30 @@
   loop_control:
     label: "{{ item.interface }}"
   when:
-    - inventory_hostname in groups['juniper'] 
+    - inventory_hostname in groups['juniper']
     - item.interface is match("^em0") or item.interface is match("^xe-0/0/0") or item.interface is match("^irb")
     - item.local != ''
 
+- name: Juniper - collect L2 interfaces data from devices
+  ansible.utils.cli_parse:
+    command: show ethernet-switching table
+    parser:
+      name: ansible.utils.textfsm
+      template_path: templates/juniper_junos_show_ethernet-switching_table.textfsm
+    set_fact: juniper_l2
+  when:
+    - inventory_hostname in groups['juniper'] 
 
 
-
-
-- name: Juniper- add vlans to interfaces in netbox
+- name: Juniper - add vlans to interfaces in netbox
   netbox.netbox.netbox_device_interface:
     data:
       device: "{{ inventory_hostname }}"
-      name: "{{ item.vlan_name }}"
+      name: "{{ item.logical_interface }}"
       mode: "access"
-      untagged_vlan: "{{ item.tag }}"
-  loop: "{{ juniper_vlans }}"
+      untagged_vlan: "{{ item.vlan_name }}"
+  loop: "{{ juniper_l2 }}"
   loop_control:
-    label: "{{ item.tag}}"
+    label: "{{ item.vlan_name }}"
   when:
-    - item.interface
-    - inventory_hostname in groups['switches']
     - inventory_hostname in groups['juniper']
