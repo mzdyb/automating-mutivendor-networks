@@ -14,4 +14,4 @@
           name: "Netbox - push devices config to netbox"
           organization: Default
           job_args:
-            limit: "{{ event.payload.message | regex_search('^(.*)-configuration-saved$') }}"
+            limit: "{{ event.payload.message | regex_search('^(.*)-configuration-saved$') | last }}"
