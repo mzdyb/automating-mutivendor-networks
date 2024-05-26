@@ -8,7 +8,7 @@
   rules:
 
     - name: Trigger device configuration change sync to netbox
-      condition: event.payload.msg is search(".*configuration-saved$")
+      condition: event.payload.message is search(".*configuration-saved$")
       action:
         run_job_template:
           name: "Netbox - push devices config to netbox"
