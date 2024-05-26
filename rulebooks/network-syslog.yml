@@ -1,0 +1,27 @@
+- name: Listen to Syslog requests
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5001
+  rules:
+
+    - name: Capture all events from this source
+      condition: true
+      action:
+        debug:
+
+    # - name: User admin changed config => pull intf config
+    #   condition: event.payload.msg is search("admin")
+    #   action:
+    #     run_job_template:
+    #       name: "NETBOX 02 - parse intfs"
+    #       organization: Default
+    #       job_args:
+    #         limit: "{{ event.payload.host }}"
+    #         extra_vars: "{{ event.payload }}"
+
+    # - name: Syslog did not match => skip
+    #   condition: event.payload is defined
+    #   action:
+    #     debug:
