@@ -34,4 +34,4 @@
 
 - name: Push ip address to device interfaces
   cisco.ios.ios_config:
-    src: test2.j2
+    src: l3_int_ip.j2

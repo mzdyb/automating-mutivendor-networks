@@ -4,4 +4,3 @@
 
   roles:
     - push_netbox_changes_to_devices
-  
