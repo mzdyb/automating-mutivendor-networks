@@ -1,0 +1,6 @@
+plugin: netbox.netbox.nb_inventory
+api_endpoint: http://192.168.122.12:2111
+validate_certs: false
+config_context: false
+group_by:
+  - device_roles
