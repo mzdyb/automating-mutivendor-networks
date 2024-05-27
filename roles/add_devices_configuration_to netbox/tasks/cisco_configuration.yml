@@ -18,9 +18,9 @@
   loop: "{{ cisco_vlans }}"
   loop_control:
     label: "{{ item.vlan_id }}"
-  when: 
+  when:
     - inventory_hostname in groups['switches']
-    - inventory_hostname in groups['cisco'] 
+    - inventory_hostname in groups['cisco']
 
 - name: "Cisco - collect interfaces data from devices"
   ansible.utils.cli_parse:
@@ -59,17 +59,17 @@
   loop_control:
     label: "{{ item.interface }}"
   when:
-    - inventory_hostname in groups['cisco'] 
+    - inventory_hostname in groups['cisco']
     - item.ip_address != ''
 
 - name: Cisco - collect L2 interfaces data from devices
   cisco.ios.ios_facts:
-    gather_network_resources: 
+    gather_network_resources:
       - "l2_interfaces"
     gather_subset:
       - min
   register: cisco_l2_interfaces
-  when: 
+  when:
     - inventory_hostname in groups['switches']
     - inventory_hostname in groups['cisco']
 

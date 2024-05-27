@@ -1,5 +1,5 @@
 ---
-- name: Add network devices to netbox
+- name: Add network devices configuration to netbox
   hosts: network
   module_defaults:
     group/netbox.netbox.netbox:

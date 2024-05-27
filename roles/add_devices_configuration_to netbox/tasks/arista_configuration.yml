@@ -18,9 +18,9 @@
   loop: "{{ arista_vlans }}"
   loop_control:
     label: "{{ item.vlan_id }}"
-  when: 
+  when:
     - inventory_hostname in groups['switches']
-    - inventory_hostname in groups['arista'] 
+    - inventory_hostname in groups['arista']
 
 - name: "Arista - collect interfaces data from devices"
   ansible.utils.cli_parse:
@@ -58,18 +58,18 @@
   loop: "{{ arista_interfaces }}"
   loop_control:
     label: "{{ item.interface }}"
-  when: 
+  when:
       - inventory_hostname in groups['arista']
       - item.ip_address != ''
 
 - name: Arista - collect L2 interfaces data from devices
   arista.eos.eos_facts:
-    gather_network_resources: 
+    gather_network_resources:
       - "l2_interfaces"
     gather_subset:
       - min
   register: arista_l2_interfaces
-  when: 
+  when:
     - inventory_hostname in groups['switches']
     - inventory_hostname in groups['arista']
 
@@ -87,4 +87,3 @@
     - item.access is defined
     - inventory_hostname in groups['switches']
     - inventory_hostname in groups['arista']
-

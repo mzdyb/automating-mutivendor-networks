@@ -1,0 +1,37 @@
+---
+- name: Collect devices data
+  ansible.builtin.uri:
+    url: "{{ netbox.url }}/api/dcim/devices/?name={{ inventory_hostname }}"
+    method: GET
+    validate_certs: false
+    headers:
+      content-type: 'aplication/json'
+      Authorization: "Token {{ netbox.token }}"
+    body_format: json
+  register: dcim_device
+
+- name: Set device id
+  ansible.builtin.set_fact:
+    device_id: "{{ dcim_device.json.results[0].id }}"
+  when: dcim_device.json.results is defined and dcim_device.json.results | length > 0
+
+- name: Collect netbox IPAM information
+  ansible.builtin.uri:
+    url: "{{ netbox.url }}/api/ipam/ip-addresses/?device_id={{ device_id }}"
+    method: GET
+    validate_certs: false
+    headers:
+      content-type: 'aplication/json'
+      Authorization: "Token {{ netbox.token }}"
+    body_format: json
+  register: ipam_info
+
+- ansible.builtin.set_fact:
+    net_l3_intfs: "{{ net_l3_intfs + [{'name': item.assigned_object.name, 'ipv4':[{'address':item.address}]} ] }}"
+  loop: "{{ ipam_info.json.results }}"
+  loop_control:
+    label: "{{ item.assigned_object.name }} ==> {{ item.address }}"
+
+- name: Push ip address to device interfaces
+  cisco.ios.ios_config:
+    src: test2.j2

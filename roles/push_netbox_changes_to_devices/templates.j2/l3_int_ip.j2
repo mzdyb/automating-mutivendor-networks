@@ -1,0 +1,4 @@
+{% for int in net_l3_intfs %}
+interface {{ int['name'] }}
+   ip address {{ int['ipv4'][0]['address'] | ipaddr('address') ~ ' ' ~ int['ipv4'][0]['address'] | ipaddr('netmask') }}
+{% endfor %}

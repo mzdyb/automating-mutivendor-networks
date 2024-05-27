@@ -1,0 +1,6 @@
+---
+- name: Push changes on netbox to network devices
+  hosts: cisco-rtr1
+
+  roles:
+    - push_netbox_changes_to_devices
