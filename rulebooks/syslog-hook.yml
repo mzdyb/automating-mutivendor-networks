@@ -14,4 +14,4 @@
           name: "Netbox - push devices config to netbox"
           organization: Default
           job_args:
-            limit: "{{ event.host }}"
+            limit: "{{ event.host }}" # 'logging origin-id hostname' in case of ios
