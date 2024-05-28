@@ -5,8 +5,8 @@
     - ansible.eda.webhook:
         host: 0.0.0.0
         port: 5000
-  rules:
 
+  rules:
     - name: Trigger device configuration change sync to netbox
       condition: event.payload.message is search(".*configuration-saved$")
       action:

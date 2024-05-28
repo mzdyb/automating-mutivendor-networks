@@ -1,0 +1,18 @@
+---
+- name: Synchronize configuration changes on netbox to devices
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5001
+
+  rules:
+    - name: Trigger netbox configuration change sync to devices
+      condition: event.payload.model == 'ipaddress' and event.payload.user == 'admin'
+      action:
+        run_job_template:
+          name: "Netbox - push netbox config changes to devices"
+          organization: Default
+          job_args:
+            extra_vars: "{{ event.payload }}"
+            limit: "{{ event.payload.host }}" # add devices hostnames to DNS to use this option
