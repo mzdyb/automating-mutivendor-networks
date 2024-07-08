@@ -13,3 +13,10 @@ The following network topology simulated on EVE-NG is used for this project:
 
 The project is based on the concept described in details in the following youtube video:  
 https://youtu.be/qhoaTd8RDNk?si=bEk4Ho7v4RGnLcKJ
+
+## Feedback
+Feedback is always welcome! If you have any comments, please reach me out
+
+## Author
+
+[@mzdyb](https://www.linkedin.com/in/michal-zdyb-9aa4046/)
